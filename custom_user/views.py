@@ -2,6 +2,8 @@ from rest_framework import status
 from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView, get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework_simplejwt.tokens import RefreshToken
+
 from custom_user.models import User
 from .serializer import UserSerializer
 
@@ -14,7 +16,7 @@ class RegisterUser(CreateAPIView):
         if not serializer.is_valid():
             return Response({"Error": "Invalid data"}, status.HTTP_400_BAD_REQUEST)
         else:
-            serializer.save()
+            user = serializer.save()
             return Response({"Success": "User Created"}, status.HTTP_201_CREATED)
 
 

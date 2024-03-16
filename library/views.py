@@ -4,10 +4,12 @@ from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView,
 from rest_framework.response import Response
 from .serializer import BookSerializer, BookDetailSerializer, BorrowBookSerializer
 from .models import Book, BookDetail, BorrowedBook
+from rest_framework.permissions import IsAuthenticated
 
 
 class AddBook(CreateAPIView):
     serializer_class = BookSerializer
+    permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
@@ -24,6 +26,7 @@ class ListOfBook(ListAPIView):
 
 
 class RetrieveBook(RetrieveAPIView):
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
         book_detail_obj = self.get_object()
@@ -38,6 +41,8 @@ class RetrieveBook(RetrieveAPIView):
 class UpdateBook(UpdateAPIView):
     serializer_class = BookDetailSerializer
 
+    permission_classes = [IsAuthenticated]
+
     def update(self, request, *args, **kwargs):
         print(self.kwargs.get('detailID'))
         book_detail_obj = BookDetail.objects.get(detail_id=self.kwargs.get('detailID'))
@@ -51,6 +56,7 @@ class UpdateBook(UpdateAPIView):
 
 
 class BorrowBookView(CreateAPIView):
+    permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
         serialize_data = BorrowBookSerializer(data=request.data)
@@ -62,6 +68,7 @@ class BorrowBookView(CreateAPIView):
 
 
 class ReturnBorrowBook(UpdateAPIView):
+    permission_classes = [IsAuthenticated]
 
     def patch(self, request, *args, **kwargs):
         borrow_book_obj = get_object_or_404(BorrowedBook, pk=self.kwargs.get("borrow_id"))
@@ -74,5 +81,7 @@ class ReturnBorrowBook(UpdateAPIView):
 
 
 class ListOfBorrowBooks(ListAPIView):
+    permission_classes = [IsAuthenticated]
+
     queryset = BorrowedBook.objects.filter(return_status=False)
     serializer_class = BorrowBookSerializer
